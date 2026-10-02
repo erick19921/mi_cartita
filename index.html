@@ -736,11 +736,11 @@
 
 
 
-          El patito reunió tus once respuestas: un tesoro escrito desde el corazón.
+          El patito reunió tus once respuestas: está listo pata enviar.
 
 
 
-          Ahora conviértelas en una cartita para compartir.
+         Se descargará en PDF.
 
 
 
@@ -1064,7 +1064,7 @@
 
             "level": "Con total honestidad",
 
-            "question": "Si este día fuera la última oportunidad para hablar con total honestidad, ¿qué me dirías?",
+            "question": "Si este día fuera la última oportunidad para hablar con total honestidad, ¿qué le dirías?",
 
             "hint": ""
 
@@ -1803,7 +1803,7 @@
 
         await doc.save("Mi cartita.pdf", { returnPromise: true });
 
-        const message = "Escribí esta cartita desde el corazón para expresar lo que siento 💛. Voy a adjuntar Mi cartita.pdf.";
+        const message = "Lo escribí desde el corazón 💛. Voy a adjuntar Mi cartita.pdf.";
 
         const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 
