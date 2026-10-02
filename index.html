@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+
+
+
+<html lang="es">
+
+
+
+<head>
+
+
+
+  <meta charset="UTF-8">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+  <meta name="theme-color" content="#f7f6f1">
+
+
+
+  <title>Mi cartita</title>
+
+  <meta name="description" content="Un espacio para escribir desde el corazón, una pregunta a la vez.">
+
+
+
+
+
+
+
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+
+
+
+
+
+  <style>
+
+
+
+    :root { color-scheme: light; }
+
+
+
+    body { background: #f7f6f1; color: #264c35; }
+
+
+
+    .serif { font-family: Georgia, "Times New Roman", serif; }
+
+
+
+    button, textarea { -webkit-tap-highlight-color: transparent; }
+
+
+
+    button:focus-visible, summary:focus-visible {
+
+
+
+      outline: 3px solid #4b8c58;
+
+
+
+      outline-offset: 5px;
+
+
+
+    }
+
+
+
+    .enter { animation: enter .4s ease both; }
+
+
+
+    .level-pop { animation: pop .65s ease both; }
+
+
+
+    .treasure { animation: treasure 2.8s ease-in-out infinite; }
+
+
+
+    @keyframes enter {
+
+
+
+      from { opacity: 0; transform: translateY(12px); }
+
+
+
+      to { opacity: 1; transform: translateY(0); }
+
+
+
+    }
+
+
+
+    @keyframes pop {
+
+
+
+      0% { opacity: 0; transform: scale(.65); }
+
+
+
+      45% { opacity: 1; transform: scale(1.12); }
+
+
+
+      75% { opacity: 1; transform: scale(1); }
+
+
+
+      100% { opacity: 0; transform: scale(1.05); }
+
+
+
+    }
+
+
+
+    @keyframes treasure {
+
+
+
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+
+
+
+      50% { transform: translateY(-10px) rotate(3deg); }
+
+
+
+    }
+
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+
+
+      *, *::before, *::after {
+
+
+
+        animation: none !important;
+
+
+
+        transition: none !important;
+
+
+
+        scroll-behavior: auto !important;
+
+
+
+      }
+
+
+
+    }
+
+
+
+    [hidden] { display: none !important; }
+
+    .duck-trail { position:relative; height:130px; margin:4px 0 14px; border-bottom:2px solid #bdd7c1; }
+
+    .stair { position:absolute; bottom:0; width:8.5%; background:#cee5d1; border-top:2px solid #95bd9c; border-right:1px solid #b1cfb7; border-radius:6px 0 0 0; color:#63836b; font:10px Arial; text-align:center; padding-top:4px; transition:background .4s; }
+
+    .stair.done { background:#84b58c; color:#173f23; }
+
+    #duck { position:absolute; left:3%; bottom:12px; font-size:32px; line-height:1; z-index:2; transform:translateX(-50%); transition:left .65s ease,bottom .65s ease; filter:drop-shadow(0 3px 2px #264c3520); }
+
+    .summit { position:absolute; right:0; bottom:87px; font-size:24px; }
+
+    .duck-celebrate { animation:duck-party .7s ease-in-out 3; }
+
+    @keyframes duck-party { 50% { transform:translateX(-50%) translateY(-14px) rotate(12deg); } }
+
+    #treasureScreen:not([hidden]) .treasure { animation:reward 1s ease both,treasure 2.8s 1s ease-in-out infinite; }
+
+    @keyframes reward { from { opacity:0; transform:scale(.4) rotate(-20deg); } to { opacity:1; transform:scale(1) rotate(0); } }
+
+    @media(prefers-reduced-motion:reduce) { #duck,.stair {transition:none;} .duck-celebrate,#treasureScreen:not([hidden]) .treasure {animation:none;} }
+
+
+
+
+
+    #reflectionDialog { width:min(92vw,560px); max-height:90dvh; overflow-y:auto; margin:auto; padding:28px; border:1px solid #bdd7c1; border-radius:24px; background:#f4fbf4; color:#264c35; box-shadow:0 24px 80px #173f2340; }
+
+    #reflectionDialog::backdrop { background:#16382299; backdrop-filter:blur(5px); }
+
+    #reflectionDialog h2 {font:30px Georgia,serif; margin:8px 0 18px;}
+
+    #reflectionDialog blockquote {line-height:1.7; padding:16px; background:#e8f5e9; border-left:3px solid #4b8c58; border-radius:8px; margin-bottom:24px;}
+
+    #reflectionDialog label {display:block; font-weight:600; margin-bottom:10px;}
+
+    #reflectionDialog textarea {width:100%; box-sizing:border-box; padding:14px; border:1px solid #bdd7c1; border-radius:12px; background:white; color:#264c35; resize:vertical;}
+
+    .dialog-actions {display:flex; gap:12px; flex-wrap:wrap; margin-top:22px;}
+
+    .dialog-actions button {padding:13px 20px; border-radius:24px; border:1px solid #357344; font-weight:600;}
+
+    #confirmSend {background:#357344;color:white;flex:1;}
+
+
+
+    * {box-sizing:border-box;}
+
+    body {margin:0;background-color:#fff3c4;background-image:radial-gradient(#ddbd6550 .8px,transparent .8px);background-size:12px 12px;color:#503f26;font:16px/1.6 system-ui,sans-serif;}
+
+    .brand {text-align:center;padding:32px 20px 20px;position:relative;z-index:1;}
+
+    .brand>span {font-size:10px;letter-spacing:3px;color:#8c692c;font-weight:700;}
+
+    .brand h1 {font:clamp(32px,6vw,48px) Georgia,serif;margin:10px 0;color:#79521e;}
+
+    .brand p {font-size:13px;margin:0;color:#927444;}
+
+    header {position:relative;max-width:680px;margin:0 auto;background:#fffcf0;border:1px solid #e9d89f;border-radius:20px;box-shadow:0 5px 20px #9570170a;padding:18px 28px;}
+
+    header p {margin:0;font-size:11px;letter-spacing:1px;}
+
+    header>div>div:first-child {display:flex;justify-content:space-between;align-items:center;gap:14px;}
+
+    #levelLabel {font-weight:700;color:#886022;}
+
+    #progressText {font-size:12px;color:#886022;}
+
+    .duck-trail {border-color:#e8d69c;}
+
+    .stair {background:#f5e6b4;border-color:#dcc479;color:#987c3e;}
+
+    .stair.done {background:#edc652;color:#6a4a17;}
+
+    #trailStatus {color:#927444;margin-bottom:8px;}
+
+    #progressBar {height:6px;overflow:hidden;border-radius:6px;background:#f1e5be;}
+
+    #progressFill {height:100%;background:#d5a62d;transition:width .5s;}
+
+    main {max-width:680px;margin:24px auto 60px;padding:0;position:relative;}
+
+    main::before {content:"";position:absolute;left:25%;top:-9px;width:135px;height:24px;background:#e9c55f90;transform:rotate(-3deg);z-index:2;}
+
+    #gameScreen,#treasureScreen {position:relative;padding:36px 32px 30px 52px;border:1px solid #e8d9ae;border-radius:4px 16px 16px 4px;background:linear-gradient(90deg,transparent 32px,#e7b4a5aa 33px,#e7b4a5aa 34px,transparent 35px),repeating-linear-gradient(#fffdf5 0px,#fffdf5 31px,#ded8bf 32px);box-shadow:5px 5px 0 #f7edcf,9px 9px 0 #e9dcb3,0 18px 35px #85631a15;}
+
+    #gameScreen>p:first-child {font-size:10px;letter-spacing:2px;font-weight:700;color:#9c772f;margin:0 0 16px;}
+
+    #questionTitle {font:clamp(25px,4.5vw,34px)/1.3 Georgia,serif;margin:0;color:#65471f;}
+
+    #questionHint {font-size:14px;color:#927444;margin:16px 0;}
+
+    .note-sticker {display:table;margin:18px 0 24px auto;padding:5px 14px;background:#f9e397;transform:rotate(2deg);font:italic 15px Georgia,serif;box-shadow:2px 3px 0 #a78b3d18;}
+
+    label {display:block;font-size:13px;font-weight:650;margin-bottom:10px;}
+
+    textarea {width:100%;min-height:175px;resize:vertical;border:1px solid #d8c58e;border-radius:8px;background:repeating-linear-gradient(#fffdf7dc 0px,#fffdf7dc 31px,#dcd3b0 32px);padding:8px 16px;font:17px/32px Georgia,serif;color:#503f26;outline:none;}
+
+    textarea:focus {border-color:#b88b21;box-shadow:0 0 0 3px #ebc94f40;}
+
+    textarea::placeholder {color:#ac9a70;}
+
+    #answerForm>div {display:flex;justify-content:space-between;gap:16px;font-size:11px;margin-top:8px;}
+
+    #answerError {color:#a33f35;margin:0;}
+
+    #characterCount {color:#95815a;white-space:nowrap;}
+
+    button {font:600 14px system-ui,sans-serif;cursor:pointer;}
+
+    #nextButton,#sendButton,#startQuestions {border:1px solid #c89927;background:#efc84c;color:#503810;padding:15px 24px;border-radius:30px;box-shadow:0 4px 0 #c59a33;transition:background .2s,transform .2s;}
+
+    #nextButton {margin-top:22px;}
+
+    #sendButton {width:100%;margin-top:28px;}
+
+    #nextButton:hover,#sendButton:hover,#startQuestions:hover {background:#f7d566;transform:translateY(-1px);}
+
+    button:disabled {opacity:.6;cursor:wait;}
+
+    button:focus-visible {outline:3px solid #a77c20;outline-offset:4px;}
+
+    #gameScreen>p:last-child {font-size:11px;color:#95815a;margin-top:22px;}
+
+    #levelOverlay {position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:#fff8dce8;text-align:center;pointer-events:none;}
+
+    #levelAnimation>p {font:30px Georgia,serif;}
+
+    #levelAnimation #levelAnnouncement {font:14px system-ui,sans-serif;color:#927444;}
+
+    #treasureScreen>div:first-child {text-align:center;}
+
+    .treasure {font-size:60px;}
+
+    #treasureTitle {font:36px Georgia,serif;color:#79521e;}
+
+    #treasureScreen h2 {font:26px Georgia,serif;}
+
+    #answersPreview {padding-left:20px;}
+
+    #answersPreview li {margin-bottom:24px;}
+
+    #answersPreview h3 {font-size:15px;margin-bottom:8px;}
+
+    #answersPreview p {white-space:pre-wrap;overflow-wrap:anywhere;margin:0;font:17px/1.7 Georgia,serif;}
+
+    #treasureScreen>p,#whatsappFallback {display:block;font-size:12px;text-align:center;color:#886022;margin-top:18px;}
+
+    #reflectionDialog {width:min(92vw,560px);padding:32px;border-radius:18px;background:#fffbed;color:#65471f;border:1px solid #dec888;box-shadow:0 24px 80px #76531d40;}
+
+    #reflectionDialog::backdrop {background:#5f481a88;backdrop-filter:blur(6px);}
+
+    #reflectionDialog blockquote {margin:20px 0;padding:22px;background:#fff0b8;border-left:3px solid #d4ac38;color:#705429;font:italic 19px/1.65 Georgia,serif;}
+
+    .welcome-note {font-size:13px;color:#927444;}
+
+    #startQuestions {width:100%;}
+
+    .flower-garden {position:fixed;pointer-events:none;z-index:0;font-size:70px;display:flex;flex-direction:column;opacity:.75;}
+
+    .flower-garden span {font-size:100px;}
+
+    .garden-left {left:2vw;bottom:5vh;transform:rotate(-20deg);}
+
+    .garden-right {right:2vw;top:10vh;transform:rotate(18deg);}
+
+    @media(max-width:900px){.flower-garden{opacity:.25;font-size:40px;}.flower-garden span{font-size:60px;}}
+
+    @media(max-width:600px){header{margin:0 14px;padding:16px;}main{margin:22px 14px 40px;}#gameScreen,#treasureScreen{padding:32px 18px 24px 42px;}#reflectionDialog{padding:24px;}#reflectionDialog blockquote{font-size:17px;padding:18px;}#nextButton{width:100%;}.brand{padding-top:22px;}}
+
+
+
+
+
+    #letterDialog {width:min(92vw,560px);max-height:92dvh;overflow-y:auto;margin:auto;padding:28px;border:1px solid #dec888;border-radius:20px;background:#fffbed;color:#65471f;box-shadow:0 24px 80px #76531d40;}
+
+    #letterDialog::backdrop {background:#5f481a88;backdrop-filter:blur(6px);}
+
+    #letterDialog h2 {font:27px/1.3 Georgia,serif;margin:12px 0;}
+
+    #letterHelp {font-size:14px;line-height:1.7;}
+
+    #letterDialog textarea {min-height:125px;}
+
+    #sendLetter {background:#efc84c;border-color:#c89927;color:#503810;flex:1;}
+
+    #letterStatus {font-size:14px;color:#886022;}
+
+    .delivery-note {font-size:11px;color:#95815a;}
+
+    .letter-scene {height:160px;position:relative;display:flex;align-items:flex-end;justify-content:center;gap:14px;padding-bottom:8px;}
+
+    .jumping-duck {font-size:42px;animation:happy-duck .7s ease-in-out infinite;}
+
+    @keyframes happy-duck {0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-22px) rotate(7deg)}}
+
+    .envelope {width:170px;height:100px;position:relative;background:#e5bc57;border-radius:6px;perspective:500px;}
+
+    .letter-paper {position:absolute;left:15px;bottom:25px;width:140px;height:105px;background:repeating-linear-gradient(#fffef7 0px,#fffef7 19px,#eee3bf 20px);padding:12px;text-align:center;font:italic 14px/20px Georgia,serif;transition:transform .9s ease;}
+
+    .envelope-front {position:absolute;inset:0;background:#f6d678;clip-path:polygon(0 0,50% 50%,100% 0,100% 100%,0 100%);z-index:2;}
+
+    .envelope-flap {position:absolute;left:0;top:0;width:100%;height:58px;background:#e8be55;clip-path:polygon(0 0,100% 0,50% 100%);transform:rotateX(180deg);transform-origin:top;transition:transform .55s ease .8s;z-index:3;}
+
+    .letter-seal {position:absolute;left:72px;top:44px;z-index:4;opacity:0;transition:opacity .25s 1.25s;}
+
+    .packing .letter-paper {transform:translateY(42px);}
+
+    .packing .envelope-flap {transform:rotateX(0);}
+
+    .packing .letter-seal {opacity:1;}
+
+    @media(prefers-reduced-motion:reduce){.jumping-duck{animation:none}.letter-paper,.envelope-flap,.letter-seal{transition:none}}
+
+
+
+
+
+    /* Paper and lavender ink, inspired by the supplied card. */
+
+    body {background-color:#f7f6f1;background-image:radial-gradient(#8c86a017 .65px,transparent .8px),repeating-linear-gradient(15deg,#ffffff20 0px,#ffffff20 2px,#dad7cc16 3px,#dad7cc16 4px);background-size:5px 5px,auto;color:#474551;}
+
+    .brand h1,#reflectionDialog h2,.signature {font-family:"Segoe Script","Apple Chancery","URW Chancery L",cursive;font-weight:400;color:#7675b0;}
+
+    .brand h1 {font-size:clamp(40px,7vw,56px);}
+
+    .brand>span,.brand p,#levelLabel,#progressText,#trailStatus,#questionHint,#gameScreen>p:first-child,#gameScreen>p:last-child,#characterCount,.welcome-note,#letterHelp,#letterStatus,.delivery-note,#treasureScreen>p,#whatsappFallback {color:#76718b;}
+
+    header {background:#fcfbf7dd;border-color:#d9d6e3;box-shadow:0 5px 20px #77708c09;}
+
+    main::before {background:#c4bdd680;}
+
+    #gameScreen,#treasureScreen {background:linear-gradient(90deg,transparent 32px,#b9afd055 33px,#b9afd055 34px,transparent 35px),repeating-linear-gradient(#fcfbf7 0px,#fcfbf7 31px,#dcd9e3 32px);border-color:#d9d6e3;box-shadow:5px 5px 0 #eeedf2,9px 9px 0 #dbd7e4,0 18px 35px #75658c10;}
+
+    #questionTitle,#treasureTitle {color:#67648e;}
+
+    .note-sticker {background:#e7e2f0;color:#75708d;}
+
+    textarea {background:repeating-linear-gradient(#fdfcf9dc 0px,#fdfcf9dc 31px,#dedbe6 32px);border-color:#c9c3d8;color:#474551;}
+
+    textarea:focus {border-color:#8a80ae;box-shadow:0 0 0 3px #a299be30;}
+
+    textarea::placeholder {color:#a19bae;}
+
+    #nextButton,#sendButton,#startQuestions,#sendLetter {background:#8882b5;color:white;border-color:#7871a6;box-shadow:0 4px 0 #6c6596;}
+
+    #nextButton:hover,#sendButton:hover,#startQuestions:hover,#sendLetter:hover {background:#7670a5;}
+
+    button:focus-visible {outline-color:#8882b5;}
+
+    .stair {background:#e4dfef;border-color:#b6adc9;color:#877c9e;}.stair.done{background:#bbb1d4;color:#4e4467;}
+
+    .duck-trail {border-color:#d3ccdf;}#progressBar {background:#e3deec;}#progressFill {background:#9285b5;}
+
+    #duck {animation:duck-curious 1.1s ease-in-out infinite;}
+
+    @keyframes duck-curious {0%,100%{transform:translateX(-50%) translateY(0) rotate(-7deg)}50%{transform:translateX(-50%) translateY(-7px) rotate(7deg)}}
+
+    .duck-encouragement {font-size:12px;color:#8980a1;text-align:center;margin:4px 0 12px;letter-spacing:0;}
+
+    .welcome-duck {text-align:center;width:60px;margin:12px auto 0;}
+
+    #reflectionDialog,#letterDialog {background:#fcfbf7;color:#555160;border-color:#d8d2e3;box-shadow:0 24px 80px #50486840;}
+
+    #reflectionDialog::backdrop,#letterDialog::backdrop {background:#4d465877;}
+
+    #reflectionDialog h2 {font-size:40px;text-align:center;}
+
+    #reflectionDialog blockquote {background:#eeebf4;border-color:#aaa0c5;color:#736a87;font-size:16px;padding:16px;}
+
+    .invitation {font-size:15px;line-height:1.8;text-align:center;}
+
+    .signature {font-size:25px;text-align:center;margin:18px 0;}
+
+    #levelOverlay {background:#f8f6f1ec;}
+
+    .flower-garden {width:145px;color:#8985ad;opacity:.65;}
+
+    .flower-garden svg {width:100%;height:auto;}
+
+    .garden-left {bottom:0;transform:rotate(-8deg);}.garden-right{top:0;transform:rotate(175deg);}
+
+    .envelope {background:#a69bbe;}.envelope-front {background:#c5badb;}.envelope-flap{background:#b0a4c9;}
+
+    .letter-paper {color:#75698c;background:repeating-linear-gradient(#fffefb 0px,#fffefb 19px,#e5deee 20px);}
+
+    .dialog-actions button {border-color:#aba0c3;}
+
+    @media(max-width:900px){.flower-garden {width:85px;opacity:.3;}}
+
+    @media(prefers-reduced-motion:reduce){#duck{animation:none;}}
+
+
+
+  </style>
+
+
+
+</head>
+
+
+
+
+
+
+
+<body class="min-h-screen">
+
+  <div class="flower-garden garden-left" aria-hidden="true"><svg viewBox="0 0 160 300" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M70 300Q50 190 85 100M100 300Q135 215 112 166M45 300Q30 255 38 204M82 113Q40 95 44 65Q73 58 85 99Q93 46 116 49Q141 77 87 108ZM112 169Q89 144 95 129Q118 123 114 159Q128 128 143 140Q149 161 112 169ZM38 209Q12 195 15 177Q38 174 39 202Q51 177 66 187Q69 209 38 209Z"/><path d="M67 180Q23 149 23 126Q61 132 67 180ZM69 206Q117 185 133 196Q115 224 69 206ZM105 238Q144 209 150 225Q135 248 105 238ZM54 261Q11 235 6 249Q23 276 54 261Z"/></svg></div>
+
+  <div class="flower-garden garden-right" aria-hidden="true"><svg viewBox="0 0 160 300" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path d="M70 300Q50 190 85 100M100 300Q135 215 112 166M45 300Q30 255 38 204M82 113Q40 95 44 65Q73 58 85 99Q93 46 116 49Q141 77 87 108ZM112 169Q89 144 95 129Q118 123 114 159Q128 128 143 140Q149 161 112 169ZM38 209Q12 195 15 177Q38 174 39 202Q51 177 66 187Q69 209 38 209Z"/><path d="M67 180Q23 149 23 126Q61 132 67 180ZM69 206Q117 185 133 196Q115 224 69 206ZM105 238Q144 209 150 225Q135 248 105 238ZM54 261Q11 235 6 249Q23 276 54 261Z"/></svg></div>
+
+  <div class="brand"><span>UN ESPACIO PARA EXPRESAR MIS SENTIMIENTOS</span><h1>Mi cartita</h1><p>Escribe lo que sientes, a tu ritmo.</p></div>
+
+
+
+  <header class="inset-x-0 top-0 z-20 border-b border-[#c3ddc6] bg-[#f7f6f1]/95 backdrop-blur">
+
+
+
+    <div class="mx-auto max-w-2xl px-6 py-5">
+
+
+
+      <div class="mb-3 flex items-center justify-between gap-3">
+
+
+
+        <p id="levelLabel" class="text-xs font-semibold uppercase tracking-widest"></p>
+
+
+
+        <span id="progressText" class="shrink-0 text-xs text-[#557660]">0%</span>
+
+
+
+      </div>
+
+
+
+      <div class="duck-trail" aria-hidden="true"><div id="stairs"></div><span id="duck">🐥</span><span class="summit">🎁</span></div>
+
+      <p id="duckEncouragement" class="duck-encouragement">Estoy aquí para acompañarte. Vamos a tu ritmo.</p>
+
+      <p id="trailStatus" class="mb-3 text-xs text-[#557660]" role="status">Nuestro patito empieza su aventura.</p>
+
+      <div id="progressBar" role="progressbar" aria-label="Preguntas completadas"
+
+
+
+           aria-valuemin="0" aria-valuemax="11" aria-valuenow="0"
+
+
+
+           class="h-1.5 overflow-hidden rounded-full bg-[#c9dfcc]">
+
+
+
+        <div id="progressFill"
+
+
+
+             class="h-full rounded-full bg-[#4b8c58] transition-all duration-500"
+
+
+
+             style="width: 0%"></div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+
+  </header>
+
+
+
+
+
+
+
+  <main class="mx-auto max-w-2xl px-6 pb-14 pt-10 sm:pt-14">
+
+
+
+    <section id="gameScreen" aria-labelledby="questionTitle">
+
+
+
+      <p class="mb-4 text-xs uppercase tracking-[.25em] text-[#508260]">
+
+
+
+        Once respuestas, un pequeño tesoro
+
+
+
+      </p>
+
+
+
+      <h1 id="questionTitle" class="serif text-3xl leading-tight sm:text-4xl"
+
+
+
+          tabindex="-1"></h1>
+
+
+
+      <p id="questionHint" class="mt-4 leading-relaxed text-[#557660]"></p>
+
+
+
+
+
+
+
+      <div class="note-sticker" aria-hidden="true">♡ Tus palabras importan, escribe con sinceridad</div>
+
+      <form id="answerForm" class="mt-9" novalidate>
+
+
+
+        <label for="answerInput" class="mb-3 block text-sm font-medium">
+
+
+
+          Tu respuesta
+
+
+
+        </label>
+
+
+
+        <textarea id="answerInput" rows="6" maxlength="3000"
+
+
+
+                  aria-describedby="answerError characterCount"
+
+
+
+                  placeholder="Escribe desde el corazón…"
+
+
+
+                  class="w-full resize-y rounded-2xl border border-[#bdd7c1] bg-white/60 p-5 leading-relaxed outline-none transition focus:border-[#4b8c58] focus:ring-2 focus:ring-[#4b8c58]/20"></textarea>
+
+
+
+
+
+
+
+        <div class="mt-2 flex items-start justify-between gap-4 text-xs">
+
+
+
+          <p id="answerError" role="alert" class="text-[#a33f35]"></p>
+
+
+
+          <span id="characterCount" class="shrink-0 text-[#557660]">0 / 3000</span>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <button id="nextButton" type="submit"
+
+
+
+                class="mt-7 w-full rounded-full bg-[#357344] px-7 py-4 text-sm font-semibold text-white transition hover:bg-[#245b32] disabled:cursor-wait disabled:opacity-60 sm:w-auto">
+
+
+
+          Siguiente →
+
+
+
+        </button>
+
+
+
+      </form>
+
+
+
+      <p class="mt-7 text-xs leading-relaxed text-[#557660]">
+
+
+
+        Tus respuestas permanecen en esta página. Si la recargas, comenzarás de nuevo.
+
+
+
+      </p>
+
+
+
+    </section>
+
+
+
+
+
+
+
+    <section id="treasureScreen" hidden aria-labelledby="treasureTitle">
+
+
+
+      <div class="text-center">
+
+
+
+        <div class="treasure mx-auto mb-6 w-fit text-7xl" role="img"
+
+
+
+             aria-label="Cofre del tesoro">🐥 🎁</div>
+
+
+
+        <p class="text-xs uppercase tracking-[.25em] text-[#508260]">
+
+
+
+          Los 11 escalones completados
+
+
+
+        </p>
+
+
+
+        <h1 id="treasureTitle" tabindex="-1"
+
+
+
+            class="serif mt-4 text-4xl sm:text-5xl">¡Llegamos a la cima!</h1>
+
+
+
+        <p class="mx-auto mt-4 max-w-md leading-relaxed text-[#557660]">
+
+
+
+          El patito reunió tus once respuestas: un tesoro escrito desde el corazón.
+
+
+
+          Ahora conviértelas en una cartita para compartir.
+
+
+
+        </p>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="mt-10 rounded-3xl border border-[#c3ddc6] bg-white/50 p-6 sm:p-8">
+
+
+
+        <h2 class="serif mb-7 text-2xl">Un vistazo a tu cartita</h2>
+
+
+
+        <ol id="answersPreview" class="space-y-7"></ol>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <button id="sendButton" type="button"
+
+
+
+              class="mt-8 w-full rounded-full bg-[#357344] px-5 py-5 text-xs font-semibold tracking-wider text-white transition hover:bg-[#245b32] disabled:cursor-wait disabled:opacity-60 sm:text-sm">
+
+
+
+        GUARDAR MI CARTITA Y ENVIAR
+
+
+
+      </button>
+
+
+
+
+
+
+
+      <p class="mt-4 text-center text-xs leading-relaxed text-[#557660]">
+
+
+
+        Se descargará Mi cartita.pdf y se abrirá WhatsApp con un mensaje preparado.
+
+
+
+        Adjunta el PDF manualmente en el chat.
+
+
+
+      </p>
+
+
+
+      <p id="sendStatus" role="status" aria-live="polite"
+
+
+
+         class="mt-4 text-center text-sm"></p>
+
+
+
+      <a id="whatsappFallback" hidden target="_blank" rel="noopener noreferrer"
+
+
+
+         class="mt-4 block text-center text-sm font-semibold underline underline-offset-4">
+
+
+
+        Abrir WhatsApp
+
+
+
+      </a>
+
+
+
+    </section>
+
+
+
+  </main>
+
+
+
+
+
+
+
+  <div id="levelOverlay" hidden
+
+
+
+       class="pointer-events-none fixed inset-0 z-30 flex items-center justify-center bg-[#f7f6f1]/90">
+
+
+
+    <div id="levelAnimation" class="text-center">
+
+
+
+      <span class="text-4xl" aria-hidden="true">✦</span>
+
+
+
+      <p class="serif mt-3 text-4xl">¡Un escalón más!</p>
+
+
+
+      <p id="levelAnnouncement" role="status" class="mt-3 text-sm text-[#557660]"></p>
+
+
+
+    </div>
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <dialog id="reflectionDialog" aria-labelledby="reflectionTitle" aria-describedby="reflectionQuote">
+
+    <div class="welcome-duck jumping-duck" aria-hidden="true">🐥</div><p class="duck-encouragement">Te acompaño, una palabra a la vez.</p>
+
+    <h2 id="reflectionTitle" tabindex="-1">Mi Cartita…</h2>
+
+    <blockquote id="reflectionQuote">Una sola conversación honesta puede acercarlos más que cien conversaciones superficiales. No se trata de tener una relación perfecta, sino de construir una donde ambos se sientan orgullosos de decir la verdad.</blockquote>
+
+    <p class="welcome-note invitation">Diego te preparó estas preguntas para ti y respondelas cuando estes lista desde el corazón. Este cuaderno es tuyo: puedes escribir lo que sientes, lo que te duele y lo que te cuesta decirle.</p>
+
+    <p class="welcome-note invitation">Cuando le compartas tu cartita, él va a leerlo en debido momento. ten paciencia, aún no esta listo</p>
+
+    <p class="signature"> Ve allá..!!♡</p>
+
+    <div class="dialog-actions"><button id="startQuestions" type="button">Empezar mi cartita →</button></div>
+
+  </dialog>
+
+
+
+
+
+  <dialog id="letterDialog" aria-labelledby="letterTitle" aria-describedby="letterHelp">
+
+    <div class="letter-scene" aria-hidden="true">
+
+      <div class="jumping-duck">🐥</div>
+
+      <div class="envelope"><div class="letter-paper">Mis palabras<br><br>♡</div><div class="envelope-front"></div><div class="envelope-flap"></div><span class="letter-seal">💛</span></div>
+
+    </div>
+
+    <h2 id="letterTitle">¿Quieres añadir algo más a tu cartita?</h2>
+
+    <p id="letterHelp">Puedes agregar unas palabras, una dedicatoria o algo que aún quieras expresar. Es opcional: tu cartita también está lista si dejas este espacio vacío.</p>
+
+    <div id="extraFields"><label for="additionalInput">Algo más que quiero decirte</label>
+
+    <textarea id="additionalInput" rows="4" maxlength="3000" placeholder="También quiero decirte…"></textarea></div>
+
+    <p id="letterStatus" role="status" aria-live="polite"></p>
+
+    <div class="dialog-actions"><button id="backToLetter" type="button">Volver</button><button id="sendLetter" type="button">Enviar mi cartita 💌</button></div>
+
+    <p class="delivery-note">Se descargará Mi cartita.pdf y se abrirá WhatsApp. Adjunta el PDF en el chat y pulsa enviar.</p>
+
+  </dialog>
+
+
+
+  <script>
+
+
+
+    // ============================================================
+
+
+
+    // EDITA AQUÍ EL NÚMERO Y LAS PREGUNTAS.
+
+
+
+    // Número con código de país, sin +, espacios ni guiones.
+
+
+
+    // El progreso se adapta al número de preguntas.
+
+
+
+    // ============================================================
+
+
+
+    const WHATSAPP_NUMBER = "593999903204";
+
+
+
+
+
+
+
+    const QUESTIONS = [
+
+      {level: "Lo que dolió", question: "¿Qué fue lo que más te lastimó de esto?"},
+
+      {
+
+            "level": "La confianza",
+
+            "question": "¿Qué estarías dispuesta a hacer por recuperar la confianza?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Quedarse",
+
+            "question": "¿Alguna vez pensaste irte? Y si fue así, ¿qué te detuvo?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Lo que cambiarías",
+
+            "question": "Si pudieras borrar algo que me hiciste, ¿qué harías?",
+
+            "hint": " "
+
+      },
+
+      {
+
+            "level": "Lo que no dijimos",
+
+            "question": "¿Qué es algo que nunca le dijiste porque tenías miedo de cómo reaccionaría?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Sentirse amada",
+
+            "question": "¿En qué parte de la relación te has sentido más amada?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Un cambio",
+
+            "question": "Si pudieras cambiar una sola cosa, ¿cuál sería y por qué?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Nuestro sueño",
+
+            "question": "¿Cuál es el mayor sueño que aún quieres cumplir con él?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Las heridas",
+
+            "question": "¿Hay alguna herida del pasado que todavía influya?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Lo que necesito escuchar",
+
+            "question": "¿Qué crees que necesita escuchar de ti en este momento, aunque sea difícil decirlo?",
+
+            "hint": ""
+
+      },
+
+      {
+
+            "level": "Con total honestidad",
+
+            "question": "Si este día fuera la última oportunidad para hablar con total honestidad, ¿qué me dirías?",
+
+            "hint": ""
+
+      }
+
+];
+
+
+
+    const REFLECTION = "Una sola conversación honesta puede acercarlos más que cien conversaciones superficiales. No se trata de tener una relación perfecta, sino de construir una donde ambos se sientan orgullosos de decir la verdad.";
+
+
+
+    let additionalMessage = "";
+
+    const answers = [];
+
+
+
+    let currentLevel = 0;
+
+
+
+    let transitioning = false;
+
+
+
+
+
+
+
+    const $ = id => document.getElementById(id);
+
+
+
+    const input = $("answerInput");
+
+
+
+    const nextButton = $("nextButton");
+
+
+
+    const sendButton = $("sendButton");
+
+
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+
+
+
+
+
+
+    function updateProgress(completed, finished = false) {
+
+
+
+      const percent = Math.round(completed / QUESTIONS.length * 100);
+
+      $("duck").style.left = (3 + completed * (85 / QUESTIONS.length)) + "%";
+
+      $("duck").style.bottom = (12 + completed * 7) + "px";
+
+      document.querySelectorAll(".stair").forEach((step, i) => step.classList.toggle("done", i < completed));
+
+      $("trailStatus").textContent = finished ? "¡Cima alcanzada! Once respuestas, un tesoro."
+
+        : `${completed} de ${QUESTIONS.length} escalones conquistados`;
+
+      if (finished) $("duck").classList.add("duck-celebrate");
+
+
+
+      $("progressFill").style.width = percent + "%";
+
+
+
+      $("progressText").textContent = percent + "%";
+
+
+
+      $("progressBar").setAttribute("aria-valuenow", completed);
+
+
+
+      $("levelLabel").textContent = finished
+
+
+
+        ? `NIVEL ${QUESTIONS.length} / ${QUESTIONS.length} - Tesoro completado`
+
+
+
+        : `NIVEL ${currentLevel + 1} / ${QUESTIONS.length} - ${QUESTIONS[currentLevel].level}`;
+
+
+
+    }
+
+
+
+
+
+
+
+    function renderQuestion(focus = false) {
+
+
+
+      const item = QUESTIONS[currentLevel];
+
+
+
+      $("questionTitle").textContent = item.question;
+
+
+
+      $("questionHint").textContent = item.hint;
+
+      $("duckEncouragement").textContent = ["Estoy aquí para acompañarte. Vamos a tu ritmo.", "Cada palabra cuenta. Sigue escribiendo desde el corazón.", "No necesitas palabras perfectas, solo palabras tuyas."][currentLevel % 3];
+
+
+
+      input.value = "";
+
+
+
+      input.removeAttribute("aria-invalid");
+
+
+
+      $("answerError").textContent = "";
+
+
+
+      $("characterCount").textContent = "0 / 3000";
+
+
+
+      nextButton.textContent = currentLevel === QUESTIONS.length - 1
+
+
+
+        ? "Descubrir mi tesoro →"
+
+
+
+        : "Siguiente →";
+
+
+
+      updateProgress(answers.length);
+
+
+
+
+
+
+
+      $("gameScreen").classList.remove("enter");
+
+
+
+      void $("gameScreen").offsetWidth;
+
+
+
+      $("gameScreen").classList.add("enter");
+
+
+
+      if (focus) $("questionTitle").focus();
+
+
+
+    }
+
+
+
+
+
+
+
+    function showTreasure() {
+
+
+
+      $("gameScreen").hidden = true;
+
+
+
+      $("treasureScreen").hidden = false;
+
+
+
+      $("treasureScreen").classList.add("enter");
+
+
+
+      updateProgress(QUESTIONS.length, true);
+
+
+
+      $("answersPreview").replaceChildren();
+
+
+
+
+
+
+
+      QUESTIONS.forEach((item, index) => {
+
+
+
+        const li = document.createElement("li");
+
+
+
+        const title = document.createElement("h3");
+
+
+
+        const answer = document.createElement("p");
+
+
+
+
+
+
+
+        title.className = "text-sm font-semibold";
+
+
+
+        title.textContent = `${index + 1}. ${item.question}`;
+
+
+
+        answer.className = "mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-[#557660]";
+
+
+
+        answer.textContent = answers[index];
+
+
+
+
+
+
+
+        li.append(title, answer);
+
+
+
+        $("answersPreview").append(li);
+
+
+
+      });
+
+
+
+
+
+
+
+      $("treasureTitle").focus();
+
+
+
+    }
+
+
+
+
+
+
+
+    $("answerForm").addEventListener("submit", async event => {
+
+
+
+      event.preventDefault();
+
+
+
+      if (transitioning) return;
+
+
+
+
+
+
+
+      const answer = input.value.trim();
+
+
+
+      if (!answer) {
+
+
+
+        $("answerError").textContent = "Escribe tu respuesta antes de continuar.";
+
+
+
+        input.setAttribute("aria-invalid", "true");
+
+
+
+        input.focus();
+
+
+
+        return;
+
+
+
+      }
+
+
+
+
+
+
+
+      transitioning = true;
+
+
+
+      nextButton.disabled = true;
+
+
+
+      answers.push(answer);
+
+
+
+      updateProgress(answers.length);
+
+
+
+
+
+
+
+      const finished = answers.length === QUESTIONS.length;
+
+
+
+      $("levelAnnouncement").textContent = finished
+
+
+
+        ? "¡Has encontrado tu tesoro!"
+
+
+
+        : `Ahora: ${QUESTIONS[currentLevel + 1].level}`;
+
+
+
+
+
+
+
+      $("levelOverlay").hidden = false;
+
+
+
+      $("levelAnimation").classList.remove("level-pop");
+
+
+
+      void $("levelAnimation").offsetWidth;
+
+
+
+      $("levelAnimation").classList.add("level-pop");
+
+
+
+
+
+
+
+      await new Promise(resolve => setTimeout(resolve, reducedMotion.matches ? 0 : 700));
+
+
+
+      $("levelOverlay").hidden = true;
+
+
+
+
+
+
+
+      if (finished) {
+
+
+
+        showTreasure();
+
+
+
+      } else {
+
+
+
+        currentLevel++;
+
+
+
+        renderQuestion(true);
+
+
+
+      }
+
+
+
+
+
+
+
+      transitioning = false;
+
+
+
+      nextButton.disabled = false;
+
+
+
+      window.scrollTo({ top: 0, behavior: reducedMotion.matches ? "auto" : "smooth" });
+
+
+
+    });
+
+
+
+
+
+
+
+    input.addEventListener("input", () => {
+
+
+
+      $("characterCount").textContent = `${input.value.length} / 3000`;
+
+
+
+      if (input.value.trim()) {
+
+
+
+        $("answerError").textContent = "";
+
+
+
+        input.removeAttribute("aria-invalid");
+
+
+
+      }
+
+
+
+    });
+
+
+
+
+
+
+
+    // Las fuentes integradas de jsPDF admiten acentos españoles.
+
+
+
+    // Sustituimos caracteres fuera de su repertorio para evitar texto corrupto.
+
+
+
+    function pdfText(value) {
+
+
+
+      return String(value)
+
+
+
+        .normalize("NFC")
+
+
+
+        .replace(/[“”]/g, '"')
+
+
+
+        .replace(/[‘’]/g, "'")
+
+
+
+        .replace(/[–—]/g, "-")
+
+
+
+        .replace(/…/g, "...")
+
+
+
+        .replace(/\t/g, "    ")
+
+
+
+        .replace(/[^\x20-\x7E\u00A0-\u00FF\n\r]/gu, "?");
+
+
+
+    }
+
+
+
+
+
+
+
+    function createPDF() {
+      if (!window.jspdf?.jsPDF) throw new Error("No se pudo cargar jsPDF. Revisa tu conexión y vuelve a intentarlo.");
+      const doc = new window.jspdf.jsPDF({unit:"mm",format:"a4",compress:true});
+      const width=210, height=297, margin=33, textWidth=145, bottom=263;
+      let y=0;
+      doc.setProperties({title:"Mi cartita",subject:"Mis respuestas desde el corazón",creator:"Mi cartita"});
+      // Illustrations are vector shapes: no emoji fonts or external images needed.
+      function flower(x,cy,r=2.2) {
+        doc.setDrawColor(145,137,171); doc.setLineWidth(.25);
+        for(let i=0;i<5;i++) {const a=i*Math.PI*2/5;doc.ellipse(x+Math.cos(a)*r,cy+Math.sin(a)*r,r*.65,r*.65,"S");}
+        doc.setFillColor(215,205,230);doc.circle(x,cy,.7,"F");
+      }
+      function sprig(x,base,flip=1) {
+        doc.setDrawColor(145,137,171);doc.setLineWidth(.28);
+        doc.lines([[3*flip,-12],[-1*flip,-12],[4*flip,-12]],x,base,[1,1],"S",false);
+        for(let i=0;i<4;i++) {
+          const yy=base-7-i*7,xx=x+(i%2?2:1)*flip;
+          doc.lines([[5*flip,-3],[-2*flip,5],[-3*flip,-2]],xx,yy,[1,1],"S",true);
+        }
+        flower(x+6*flip,base-39);flower(x-3*flip,base-22,1.7);
+        doc.line(x,base-12,x-3*flip,base-20);
+      }
+      function duck(x,cy,k=1) {
+        doc.setDrawColor(202,156,65);doc.setLineWidth(.25);
+        doc.setFillColor(250,219,112);doc.ellipse(x,cy,7*k,5*k,"FD");
+        doc.circle(x+4*k,cy-6*k,4.3*k,"FD");
+        doc.setFillColor(244,198,80);doc.ellipse(x-1*k,cy,3.4*k,2.2*k,"F");
+        doc.setFillColor(236,155,62);doc.triangle(x+7.5*k,cy-6*k,x+11*k,cy-5*k,x+7.5*k,cy-4*k,"F");
+        doc.setFillColor(60,57,69);doc.circle(x+5.3*k,cy-7*k,.48*k,"F");
+        doc.setFillColor(244,181,151);doc.circle(x+5*k,cy-4.8*k,.85*k,"F");
+        doc.setFillColor(172,158,202);doc.triangle(x+2*k,cy-2*k,x-1*k,cy-3.5*k,x-1*k,cy-.5*k,"F");
+        doc.triangle(x+2*k,cy-2*k,x+5*k,cy-3.5*k,x+5*k,cy-.5*k,"F");
+      }
+      function decoratePage(first=false) {
+        doc.setFillColor(247,246,241);doc.rect(0,0,width,height,"F");
+        // Subtle fibers and layered paper edges.
+        doc.setDrawColor(238,236,231);doc.setLineWidth(.12);
+        for(let i=0;i<190;i++){const xx=9+(i*43)%192,yy=8+(i*71)%280;doc.line(xx,yy,xx+1.2,yy+.2);}
+        doc.setFillColor(228,224,234);doc.roundedRect(19,17,176,264,2,2,"F");
+        doc.setFillColor(253,252,248);doc.setDrawColor(218,213,226);doc.setLineWidth(.25);doc.roundedRect(16,14,176,264,2,2,"FD");
+        doc.setDrawColor(232,228,237);doc.setLineWidth(.18);
+        for(let row=62;row<=266;row+=6) doc.line(29,row,182,row);
+        doc.setDrawColor(213,199,220);doc.line(28,55,28,269);
+        doc.setFillColor(227,220,237);doc.rect(81,11,45,7,"F");
+        sprig(9,69);sprig(200,273,-1);
+        duck(166,39,.85);
+        doc.setTextColor(118,117,176);doc.setFont("times","italic");doc.setFontSize(first?32:23);
+        doc.text("Mi cartita",margin,first?36:34);
+        doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(139,130,157);
+        doc.text("PALABRAS ESCRITAS DESDE EL CORAZON",margin,44);
+        y=first?56:62;
+      }
+      function nextPage(){doc.addPage();decoratePage(false);}
+      function style(font,size,color){doc.setFont("times",font);doc.setFontSize(size);doc.setTextColor(...color);}
+      function block(value,{font="normal",size=12,color=[71,69,81]}={}) {
+        style(font,size,color);
+        const lines=doc.splitTextToSize(pdfText(value),textWidth);
+        for(const line of lines){if(y>bottom) nextPage();style(font,size,color);doc.text(line,margin,y);y+=6;}
+      }
+      function question(title,answer) {
+        style("bold",11,[111,101,143]);
+        const count=doc.splitTextToSize(pdfText(title),textWidth).length;
+        if(y+(count+1)*6>bottom) nextPage();
+        block(title,{font:"bold",size:11,color:[111,101,143]});
+        y+=6;
+        block(answer);
+        y+=12;
+      }
+      decoratePage(true);
+      block(new Intl.DateTimeFormat("es",{dateStyle:"long"}).format(new Date()),{size:10,color:[139,130,157]});
+      y+=6;
+      block("Lo que pienso, escritas desde el corazón.",{font:"italic",size:13,color:[118,117,176]});
+      y+=12;
+      QUESTIONS.forEach((item,index)=>question(`${index+1}. ${item.question}`,answers[index]));
+      if(additionalMessage) question("Algo más que quiero decirte",additionalMessage);
+      if(y+18>bottom) nextPage();
+      block("Con cariño.",{font:"italic",size:18,color:[118,117,176]});
+      const pages=doc.internal.getNumberOfPages();
+      for(let page=1;page<=pages;page++) {
+        doc.setPage(page);doc.setFont("times","italic");doc.setFontSize(9);doc.setTextColor(139,130,157);
+        doc.text("Cada palabra guarda un pedacito de mí.",width/2,285,{align:"center"});
+        doc.setFont("helvetica","normal");doc.setFontSize(8);doc.text(`${page} / ${pages}`,width/2,291,{align:"center"});
+      }
+      return doc;
+    }
+
+
+    const reflectionDialog = $("reflectionDialog");
+
+    let started = false;
+
+    function startQuestions() {
+
+      started = true;
+
+      reflectionDialog.close();
+
+      document.body.style.overflow = "";
+
+      $("gameScreen").hidden = false;
+
+      renderQuestion(true);
+
+    }
+
+    $("startQuestions").addEventListener("click", startQuestions);
+
+    reflectionDialog.addEventListener("cancel", event => {
+
+      event.preventDefault();
+
+      startQuestions();
+
+    });
+
+    const letterDialog = $("letterDialog");
+
+    let sending = false;
+
+    sendButton.addEventListener("click", () => {
+
+      if (answers.length !== QUESTIONS.length || sending) return;
+
+      letterDialog.classList.remove("packing");
+
+      $("extraFields").hidden = false;
+
+      $("letterTitle").textContent = "¿Quieres añadir algo más a tu cartita?";
+
+      $("letterStatus").textContent = "";
+
+      letterDialog.showModal();
+
+      document.body.style.overflow = "hidden";
+
+      $("additionalInput").focus();
+
+    });
+
+    $("backToLetter").addEventListener("click", () => letterDialog.close());
+
+    letterDialog.addEventListener("cancel", event => { if (sending) event.preventDefault(); });
+
+    letterDialog.addEventListener("close", () => {
+
+      document.body.style.overflow = "";
+
+      sendButton.focus();
+
+    });
+
+    $("sendLetter").addEventListener("click", async () => {
+
+      if (sending || answers.length !== QUESTIONS.length) return;
+
+      additionalMessage = $("additionalInput").value.trim();
+
+      $("letterStatus").textContent = "";
+
+      $("sendStatus").textContent = "";
+
+      $("whatsappFallback").hidden = true;
+
+      let doc;
+
+      try { doc = createPDF(); }
+
+      catch (error) { $("letterStatus").textContent = error.message; return; }
+
+      sending = true;
+
+      sendButton.disabled = true;
+
+      $("sendLetter").disabled = true;
+
+      $("backToLetter").disabled = true;
+
+      // Reserve the tab within the click gesture, before the envelope animation.
+
+      let whatsappWindow = null;
+
+      try {
+
+        whatsappWindow = window.open("about:blank", "_blank");
+
+        if (whatsappWindow) whatsappWindow.opener = null;
+
+      } catch (_) {}
+
+      try {
+
+        $("extraFields").hidden = true;
+
+        $("letterTitle").textContent = "Guardando tus palabras en el sobre…";
+
+        $("letterStatus").textContent = "El patito está preparando tu cartita con mucho cariño.";
+
+        letterDialog.classList.add("packing");
+
+        await new Promise(resolve => setTimeout(resolve, reducedMotion.matches ? 0 : 1700));
+
+        $("letterTitle").textContent = "Tu cartita está lista 💌";
+
+        await doc.save("Mi cartita.pdf", { returnPromise: true });
+
+        const message = "Escribí esta cartita desde el corazón para expresar lo que siento 💛. Voy a adjuntar Mi cartita.pdf.";
+
+        const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+        $("whatsappFallback").href = whatsappURL;
+
+        $("whatsappFallback").hidden = false;
+
+        if (whatsappWindow && !whatsappWindow.closed) {
+
+          try { whatsappWindow.location.replace(whatsappURL); }
+
+          catch (_) { whatsappWindow.close(); }
+
+        }
+
+        $("sendStatus").textContent = "Tu cartita está lista. Se descargó Mi cartita.pdf. Adjunta el archivo en WhatsApp y pulsa enviar. Si el chat no se abrió, usa el enlace de abajo.";
+
+        letterDialog.close();
+
+      } catch (error) {
+
+        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+
+        $("letterStatus").textContent = error.message || "No se pudo preparar tu cartita. Vuelve a intentarlo.";
+
+        $("extraFields").hidden = false;
+
+        letterDialog.classList.remove("packing");
+
+      } finally {
+
+        sending = false;
+
+        sendButton.disabled = false;
+
+        $("sendLetter").disabled = false;
+
+        $("backToLetter").disabled = false;
+
+      }
+
+    });
+
+
+
+    for (let i = 0; i < QUESTIONS.length; i++) {
+
+      const step = document.createElement("span");
+
+      step.className = "stair";
+
+      step.style.left = (7 + i * (85 / QUESTIONS.length)) + "%";
+
+      step.style.width = (85 / QUESTIONS.length) + "%";
+
+      step.style.height = (12 + (i + 1) * 7) + "px";
+
+      step.textContent = i + 1;
+
+      $("stairs").append(step);
+
+    }
+
+
+
+    $("progressBar").setAttribute("aria-valuemax", QUESTIONS.length);
+
+    renderQuestion();
+
+    $("gameScreen").hidden = true;
+
+    reflectionDialog.showModal();
+
+    document.body.style.overflow = "hidden";
+
+    $("reflectionTitle").focus();
+
+
+
+  </script>
+
+
+
+</body>
+
+
+
+</html>
